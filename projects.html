@@ -4,74 +4,193 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Projects – Hardik Sethia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css"/>
+  <script>(function(){if(localStorage.getItem('hs-theme')==='light')document.body.classList.add('light');})()</script>
+  <style>
+    /* ── Page hero ── */
+    .page-hero { padding: 148px 0 60px; border-bottom: 1px solid var(--border); }
+    .page-hero h1 { font-family:var(--font-display);font-size:clamp(48px,8vw,88px);font-weight:800;letter-spacing:-3px;line-height:0.95; }
+    .page-hero h1 em { font-family:'Instrument Serif',serif;font-style:italic;color:var(--accent);font-weight:400; }
+    .page-hero .hero-sub { font-size:13px;color:var(--muted);margin-top:18px;max-width:540px;line-height:1.8; }
+
+    /* ── Card extras for projects page ── */
+    .card .actions { margin-top: 16px; }
+    details div p + p { margin-top: 8px; }
+
+    /* ── Page enter animation ── */
+    /* Cards start invisible and fly in staggered */
+    .card.page-enter {
+      opacity: 0;
+      transform: translateY(40px) scale(0.97);
+    }
+    .card.page-enter.entered {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.6s var(--ease-spring), transform 0.6s var(--ease-spring);
+    }
+
+    /* Particle burst canvas */
+    #burst-canvas {
+      position: fixed; inset: 0; z-index: 200;
+      pointer-events: none; opacity: 1;
+    }
+
+    @media(max-width:640px){ .page-hero { padding: 120px 0 48px; } }
+  </style>
 </head>
 <body>
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="page-transition"></div>
+<canvas id="burst-canvas"></canvas>
+
 <header>
   <nav class="container">
-    <a class="logo" href="/">Hardik Sethia</a>
+    <a class="logo" href="index.html">Hardik <span>Sethia</span></a>
     <ul class="nav-links">
-      <li><a href="index.html#projects">Back</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
     </ul>
+    <div class="nav-right">
+      <button id="theme-toggle">☀ Light</button>
+      <a class="btn" href="index.html" style="font-size:11px;">← Back</a>
+    </div>
   </nav>
 </header>
 
 <main>
-  <section class="section">
+  <section class="page-hero section">
     <div class="container">
       <span class="eyebrow">All work</span>
-      <h2>Projects</h2>
-      <div class="grid">
-        <article class="card">
+      <h1>Pro<em>jects</em></h1>
+      <p class="hero-sub">A collection of builds, experiments, and shipped things.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid" id="projects-grid">
+
+        <article class="card page-enter">
           <h3>TeraToffs – NFT Collection</h3>
-          <div class="meta">ERC‑1155 • 500 NFTs</div>
-          <p>Collection architecture, metadata pipeline, and launch ops.</p>
-          <div class="actions"><a class="btn" href="https://opensea.io/collection/teratoffs">OpenSea</a></div>
-          <!-- Optional video embed -->
-          <!-- <div class="media" style="margin-top:12px;aspect-ratio:16/9">
-               <iframe src="YOUTUBE_EMBED_URL" title="TeraToffs demo" frameborder="0" allowfullscreen style="width:100%;height:100%;border-radius:12px"></iframe>
-             </div> -->
-          <details><summary>Learn more</summary><div><p>Role across smart contract config, asset QC, and listing cadence.</p></div></details>
+          <div class="meta">ERC‑1155 · 500 NFTs · Blockchain</div>
+          <p>Collection architecture, metadata pipeline, and launch ops for a collaborative NFT drop.</p>
+          <div class="actions"><a class="btn" href="https://opensea.io/collection/teratoffs" target="_blank">View on OpenSea</a></div>
+          <details><summary>Learn more</summary><div><p>Role across smart contract config, asset QC, and listing cadence. Implemented ERC‑1155 minting and coordinated the art-gen pipeline.</p></div></details>
         </article>
 
-        <article class="card">
+        <article class="card page-enter">
           <h3>Beat the Heat</h3>
-          <div class="meta">Environmental</div>
-          <p>Self‑irrigation installs, green zones, and ₹50,000 fundraising.</p>
-          <!-- Optional video -->
-          <details><summary>Learn more</summary><div><p>Community engagement, site selection, and monitoring plan.</p></div></details>
+          <div class="meta">Environmental · Community</div>
+          <p>Self-irrigation installs, green zones, and ₹50,000 fundraising for urban heat mitigation.</p>
+          <details><summary>Learn more</summary><div><p>Community engagement, site selection, and monitoring plan. Led the team across multiple green zone installations.</p></div></details>
         </article>
 
-        <article class="card">
+        <article class="card page-enter">
           <h3>Smart Lamp Design</h3>
-          <div class="meta">Product</div>
-          <p>Modular optics and test-backed ergonomics.</p>
-          <!-- Optional video -->
-          <details><summary>Learn more</summary><div><p>Statics for stability, hinge wear testing, and component sourcing.</p></div></details>
+          <div class="meta">Product · Modular Optics</div>
+          <p>Compact lamp prototype with swappable filters, two-way adjustment, and integrated phone stand.</p>
+          <details><summary>Learn more</summary><div><p>Statics for stability, hinge wear testing, and component sourcing. Iterated on base weight and thermal profile via bench tests.</p></div></details>
         </article>
 
-        <article class="card">
+        <article class="card page-enter">
           <h3>Industrial Process Docs</h3>
-          <div class="meta">Manufacturing</div>
-          <p>8 factory reports focusing on technology and optimization.</p>
-          <details><summary>Learn more</summary><div><p>Process mapping, bottleneck analysis, and improvement notes.</p></div></details>
+          <div class="meta">Manufacturing · Analysis</div>
+          <p>8 comprehensive factory reports focusing on technology assessment and process optimization.</p>
+          <details><summary>Learn more</summary><div><p>Process mapping, bottleneck analysis, and structured improvement notes across 8 different manufacturing contexts.</p></div></details>
         </article>
 
-        <article class="card">
+        <article class="card page-enter">
           <h3>Automated Compost Bin</h3>
-          <div class="meta">IoT • Residency</div>
-          <p>Sensor fusion for efficient composting.</p>
-          <!-- Optional video -->
-          <details><summary>Learn more</summary><div><p>Control loop design, alerting, and maintenance UX.</p></div></details>
+          <div class="meta">IoT · Makers Asylum Residency</div>
+          <p>Sensor fusion for temperature/humidity monitoring with agitation control and maintenance alerts.</p>
+          <details><summary>Learn more</summary><div><p>Control loop design, alerting pipeline, and maintenance UX. Integrated embedded sensors with notification hooks.</p></div></details>
         </article>
+
+        <article class="card page-enter">
+          <h3>Voice Assistant "Sophie"</h3>
+          <div class="meta">LLM · VAD · Face Recognition</div>
+          <p>Full voice assistant pipeline with active voice detection, LLM inference backend, and biometric face ID.</p>
+          <details><summary>Learn more</summary><div><p>Built during internship at TheStudentScoop. Owned speech pipeline, enrollment/verification flow, and reliability improvements.</p></div></details>
+        </article>
+
       </div>
     </div>
   </section>
 </main>
 
-<footer><div class="container">© Hardik Sethia</div></footer>
-<script src="assets/script.js"></script>
+<footer><div class="container">© 2025 Hardik Sethia</div></footer>
+
+<script src="assets/cursor.js"></script>
+<script src="assets/site.js"></script>
+<script>
+/* ── Particle burst on page enter ── */
+(function(){
+  const canvas = document.getElementById('burst-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  const isLight = document.body.classList.contains('light');
+  const COLORS = isLight
+    ? ['rgba(26,143,0,', 'rgba(0,96,176,', 'rgba(180,200,100,']
+    : ['rgba(127,255,110,', 'rgba(91,200,255,', 'rgba(255,126,179,'];
+
+  /* Spawn particles from random edge points */
+  let particles = [];
+  const BURST_COUNT = 60;
+  for(let i = 0; i < BURST_COUNT; i++){
+    const angle = (Math.PI * 2 * i / BURST_COUNT) + (Math.random()-0.5)*0.4;
+    const speed = 2.5 + Math.random() * 4;
+    const color = COLORS[Math.floor(Math.random()*COLORS.length)];
+    particles.push({
+      x: W/2 + (Math.random()-0.5)*80,
+      y: H/2 + (Math.random()-0.5)*80,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed,
+      r: Math.random()*2.5+0.8,
+      alpha: 1,
+      color,
+      decay: 0.014 + Math.random()*0.012,
+    });
+  }
+
+  let burstDone = false;
+  function drawBurst(){
+    ctx.clearRect(0,0,W,H);
+    let alive = 0;
+    particles.forEach(p => {
+      if(p.alpha <= 0) return;
+      alive++;
+      p.x += p.vx; p.y += p.vy;
+      p.vx *= 0.97; p.vy *= 0.97;
+      p.alpha -= p.decay;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color + Math.max(0,p.alpha) + ')';
+      ctx.fill();
+    });
+    if(alive > 0) requestAnimationFrame(drawBurst);
+    else { canvas.style.display='none'; burstDone=true; }
+  }
+
+  /* Stagger card entrances */
+  const cards = document.querySelectorAll('.card.page-enter');
+  cards.forEach((card, i) => {
+    setTimeout(() => {
+      card.classList.add('entered');
+    }, 80 + i * 100);
+  });
+
+  /* Start burst slightly after load */
+  setTimeout(drawBurst, 50);
+})();
+</script>
 </body>
 </html>
-
-

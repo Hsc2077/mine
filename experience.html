@@ -4,54 +4,364 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Experience – Hardik Sethia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css"/>
+  <script>(function(){if(localStorage.getItem('hs-theme')==='light')document.body.classList.add('light');})()</script>
+  <style>
+    /* ── Page hero ── */
+    .page-hero { padding: 148px 0 60px; border-bottom: 1px solid var(--border); }
+    .page-hero h1 { font-family:var(--font-display);font-size:clamp(48px,8vw,88px);font-weight:800;letter-spacing:-3px;line-height:0.95; }
+    .page-hero h1 em { font-family:'Instrument Serif',serif;font-style:italic;color:var(--accent);font-weight:400; }
+    .page-hero .hero-sub { font-size:13px;color:var(--muted);margin-top:18px;max-width:540px;line-height:1.8; }
+
+    /* ── Vertical Timeline ── */
+    .timeline-wrap { position:relative; padding-left:36px; }
+    .timeline-wrap::before {
+      content:''; position:absolute;
+      left:7px; top:8px; bottom:0; width:1px;
+      background:linear-gradient(to bottom,var(--accent),transparent 92%);
+      opacity:0.35;
+    }
+
+    .year-marker { position:relative;margin-bottom:10px;margin-top:52px; }
+    .year-marker:first-child { margin-top:8px; }
+    .year-marker .y-label {
+      display:inline-block;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+      color:var(--muted);background:var(--bg);
+      padding:4px 10px;border:1px solid var(--border);border-radius:100px;
+      transition:background 0.4s;
+    }
+
+    /* ── Timeline Item ── */
+    .timeline-item {
+      position:relative;
+      margin-bottom:6px;
+      padding:28px 32px;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:16px;
+      overflow:hidden; /* contains the hover bar */
+      transition:border-color 0.3s,box-shadow 0.3s,transform 0.3s;
+    }
+    .timeline-item:hover {
+      border-color:rgba(127,255,110,0.22);
+      box-shadow:0 16px 48px rgba(0,0,0,0.3);
+      transform:translateX(4px);
+    }
+    body.light .timeline-item:hover {
+      border-color:rgba(26,143,0,0.28);
+      box-shadow:0 10px 32px rgba(0,0,0,0.08);
+    }
+    /* Dot on the timeline line */
+    .timeline-item::before {
+      content:'';position:absolute;
+      left:-33px;top:36px;
+      width:9px;height:9px;
+      background:var(--accent);border-radius:50%;
+      border:2px solid var(--bg);
+      transition:background 0.3s,transform 0.3s;
+    }
+    .timeline-item:hover::before { transform:scale(1.4);background:var(--accent2); }
+    /* Top hover bar — contained by overflow:hidden */
+    .timeline-item::after {
+      content:'';position:absolute;
+      top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      transform:scaleX(0);transform-origin:left;
+      transition:transform 0.4s var(--ease-spring);
+    }
+    .timeline-item:hover::after { transform:scaleX(1); }
+
+    .t-header { display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:8px;flex-wrap:wrap; }
+    .t-title { font-family:var(--font-display);font-size:19px;font-weight:700;letter-spacing:-0.3px;transition:color 0.25s;color:var(--text); }
+    .timeline-item:hover .t-title { color:var(--accent); }
+    .t-date-badge { flex-shrink:0;font-size:11px;letter-spacing:0.06em;color:var(--muted);background:var(--surface2);padding:4px 10px;border-radius:100px;border:1px solid var(--border);white-space:nowrap; }
+    .t-sub { font-size:11px;color:var(--accent2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px; }
+    .t-desc { color:rgba(232,232,240,0.75);font-size:13px;line-height:1.8; }
+    body.light .t-desc { color:#3a3a4a; }
+    .t-tags { display:flex;flex-wrap:wrap;gap:6px;margin-top:14px; }
+    .t-tag { font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid var(--border);color:var(--muted); }
+    .t-detail { display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;line-height:1.8; }
+    body.light .t-detail { color:#555566; }
+    .timeline-item.expanded .t-detail { display:block; }
+    .expand-btn { background:none;border:1px solid var(--border);color:var(--accent);font-family:var(--font-body);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:5px 14px;border-radius:100px;cursor:none;margin-top:14px;transition:all 0.25s;display:inline-block; }
+    .expand-btn:hover { background:rgba(127,255,110,0.08);border-color:var(--accent); }
+
+    .badge-new { display:inline-block;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;background:var(--accent);color:#0a0a0f;padding:2px 7px;border-radius:100px;font-weight:700;margin-left:8px;vertical-align:middle; }
+
+    /* ── Timeline page-enter animation ── */
+    .timeline-item.page-enter {
+      opacity: 0;
+      transform: translateX(-24px);
+    }
+    .timeline-item.page-enter.entered {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.55s var(--ease-spring), transform 0.55s var(--ease-spring);
+    }
+    .year-marker.page-enter {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    .year-marker.page-enter.entered {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    /* ── Scan line effect on page enter ── */
+    #scanline {
+      position: fixed; left: 0; right: 0; z-index: 300;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      pointer-events: none;
+      top: 0;
+    }
+    #scanline.scanning {
+      opacity: 0.6;
+      animation: scan 0.9s var(--ease-out) forwards;
+    }
+    @keyframes scan { from{top:0} to{top:100vh;opacity:0} }
+
+    /* ── Terminal ── */
+    .terminal { background:#0d0d12;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:64px; }
+    body.light .terminal { background:#1a1a24; }
+    .terminal-bar { background:#1a1a24;padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06); }
+    .t-dot-r{background:#ff5f57}.t-dot-y{background:#febc2e}.t-dot-g{background:#28c840}
+    .terminal-title { font-size:11px;color:#555;letter-spacing:0.06em;margin-left:auto; }
+    .terminal-body { padding:20px 24px;min-height:120px;max-height:280px;overflow-y:auto; }
+    .terminal-line { display:flex;align-items:flex-start;gap:10px;margin-bottom:10px; }
+    .t-prompt { color:var(--accent);flex-shrink:0;font-size:13px;margin-top:1px; }
+    .t-output { color:#aaaabc;font-size:13px;line-height:1.7; }
+    .t-output .highlight { color:var(--accent); }
+    .terminal-input-row { display:flex;align-items:center;gap:10px;margin-top:4px; }
+    #terminal-input { background:none;border:none;outline:none;color:#e0e0f0;font-family:var(--font-body);font-size:13px;flex:1;caret-color:var(--accent); }
+    .t-cursor { width:8px;height:15px;background:var(--accent);display:inline-block;animation:blink 1s step-end infinite; }
+    @keyframes blink { 50%{opacity:0} }
+
+    @media(max-width:640px){ .t-header{flex-direction:column}.t-date-badge{align-self:flex-start}.timeline-wrap{padding-left:24px} }
+  </style>
 </head>
 <body>
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="page-transition"></div>
+<div id="scanline"></div>
+
 <header>
   <nav class="container">
-    <a class="logo" href="/">Hardik Sethia</a>
+    <a class="logo" href="index.html">Hardik <span>Sethia</span></a>
     <ul class="nav-links">
-      <li><a href="index.html#experience">Back</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
     </ul>
+    <div class="nav-right">
+      <button id="theme-toggle">☀ Light</button>
+      <a class="btn" href="index.html" style="font-size:11px;">← Back</a>
+    </div>
   </nav>
 </header>
 
 <main>
-  <section class="section">
+  <section class="page-hero section">
     <div class="container">
-      <span class="eyebrow">Career & roles</span>
-      <h2>Experience</h2>
-      <div class="grid">
-        <article class="card">
-          <h3>Intern – TheStudentScoop</h3>
-          <div class="meta">June – Sept 2024</div>
-          <p>LLM voice assistant (“Sophie”), VAD, face recognition, and robotics prototyping.</p>
-          <details><summary>Learn more</summary><div><p>Speech pipeline, identity flow, and reliability improvements.</p></div></details>
-        </article>
-
-        <article class="card">
-          <h3>Fellow – Encode Justice (India)</h3>
-          <div class="meta">Aug – Dec 2023</div>
-          <p>AI-in-education advocacy via partnerships and case analyses.</p>
-          <details><summary>Learn more</summary><div><p>Policy proposals and ethics reviews for classroom tools.</p></div></details>
-        </article>
-
-        <article class="card">
-          <h3>Member – Sports Council</h3>
-          <div class="meta">Aug 2023 – May 2024</div>
-          <p>Event operations across 15+ sports meets.</p>
-          <details><summary>Learn more</summary><div><p>Budget, staffing, and vendor coordination.</p></div></details>
-        </article>
-      </div>
+      <span class="eyebrow">Career & Roles</span>
+      <h1>Experi<em>ence</em></h1>
+      <p class="hero-sub">A timeline of roles, projects, and learning moments — newest first.</p>
     </div>
   </section>
 
-  
+  <section class="section">
+    <div class="container">
+      <div class="timeline-wrap">
+
+        <div class="year-marker page-enter"><span class="y-label">2026</span></div>
+
+        <div class="timeline-item page-enter">
+          <div class="t-header">
+            <div class="t-title">Connected Automated Vehicles Subteam Member <span class="badge-new">New</span></div>
+            <span class="t-date-badge">Jan 2026 – Present</span>
+          </div>
+          <div class="t-sub">Hybrid Electric Vehicle Team · Virginia Tech · Full-time</div>
+          <div class="t-desc">Implemented a coordinate frame transformation to visualize GPS data as distance in an XY coordinate frame. Designed and implemented a simplified Adaptive Cruise Control in Foxglove simulation.</div>
+          <div class="t-tags"><span class="t-tag">Git</span><span class="t-tag">ROS</span><span class="t-tag">Foxglove</span><span class="t-tag">Coordinate Geometry</span></div>
+          <div class="t-detail">Working on the connected autonomous vehicles subteam at Virginia Tech's HEVT. Responsible for coordinate frame math and sensor fusion for GPS-based localisation, prototyping driver-assist features in simulation.</div>
+          <button class="expand-btn" onclick="toggleExpand(this)">Details +</button>
+        </div>
+
+        <div class="year-marker page-enter"><span class="y-label">2025</span></div>
+
+        <div class="timeline-item page-enter">
+          <div class="t-header">
+            <div class="t-title">Project Lead at R&amp;D — inspireFly <span class="badge-new">New</span></div>
+            <span class="t-date-badge">Oct 2025 – Present</span>
+          </div>
+          <div class="t-sub">Virginia Tech · Part-time · 7 mos</div>
+          <div class="t-desc">Designing a payload board for a stratospheric deployment mission in KiCAD. Managing a team of 5+ members, allocating tasks via Excel and ClickUp across the full R&amp;D lifecycle.</div>
+          <div class="t-tags"><span class="t-tag">KiCAD</span><span class="t-tag">Project Planning</span><span class="t-tag">Team Leadership</span></div>
+          <div class="t-detail">Leading the development of a 5×5 inch pocket cube designed for stratospheric deployment. Responsible for electronics architecture, payload integration, and coordinating cross-functional team workflows.</div>
+          <button class="expand-btn" onclick="toggleExpand(this)">Details +</button>
+        </div>
+
+        <div class="year-marker page-enter"><span class="y-label">2024</span></div>
+
+        <div class="timeline-item page-enter">
+          <div class="t-header">
+            <div class="t-title">Intern — TheStudentScoop</div>
+            <span class="t-date-badge">Jun – Sep 2024</span>
+          </div>
+          <div class="t-sub">AI &amp; Robotics</div>
+          <div class="t-desc">Built "Sophie," a voice assistant with LLM backend, active voice detection (VAD), and facial recognition. Contributed to RoboDog and humanoid robotics prototypes.</div>
+          <div class="t-tags"><span class="t-tag">LLM</span><span class="t-tag">VAD</span><span class="t-tag">Face Recognition</span><span class="t-tag">Python</span></div>
+          <div class="t-detail">Owned the active voice detection pipeline end-to-end. Integrated model inference endpoints, implemented enrollment/verification flow for face ID, and shipped reliability improvements for production deployment.</div>
+          <button class="expand-btn" onclick="toggleExpand(this)">Details +</button>
+        </div>
+
+        <div class="timeline-item page-enter">
+          <div class="t-header">
+            <div class="t-title">Head of Electrical — FRC Team</div>
+            <span class="t-date-badge">Nov 2023 – Mar 2024</span>
+          </div>
+          <div class="t-sub">Robotics · Rookie's Award</div>
+          <div class="t-desc">Led all electrical systems for a rookie FRC team; earned the Rookie's Award with robust power management and safety design.</div>
+          <div class="t-tags"><span class="t-tag">Electrical Systems</span><span class="t-tag">FRC</span><span class="t-tag">Safety Design</span></div>
+          <div class="t-detail">Specified protection circuits, harness routing, and labeling standards. Coordinated pit procedures and fault isolation during competition events.</div>
+          <button class="expand-btn" onclick="toggleExpand(this)">Details +</button>
+        </div>
+
+        <div class="year-marker page-enter"><span class="y-label">2023</span></div>
+
+        <div class="timeline-item page-enter">
+          <div class="t-header">
+            <div class="t-title">Fellow — Encode Justice (India)</div>
+            <span class="t-date-badge">Aug – Dec 2023</span>
+          </div>
+          <div class="t-sub">AI Policy &amp; Advocacy</div>
+          <div class="t-desc">Advanced AI-in-education awareness through school partnerships and policy case reviews.</div>
+          <div class="t-tags"><span class="t-tag">AI Policy</span><span class="t-tag">Advocacy</span><span class="t-tag">Research</span></div>
+          <div class="t-detail">Formed 3 institutional partnerships, researched 10+ policy proposals, and evaluated 30+ case studies on ethical AI integration in classroom settings.</div>
+          <button class="expand-btn" onclick="toggleExpand(this)">Details +</button>
+        </div>
+
+        <div class="timeline-item page-enter">
+          <div class="t-header">
+            <div class="t-title">Member — Sports Council</div>
+            <span class="t-date-badge">Aug 2023 – May 2024</span>
+          </div>
+          <div class="t-sub">Events &amp; Operations</div>
+          <div class="t-desc">Organized 15+ sports events, handling end-to-end operations, scheduling, and stakeholder coordination.</div>
+          <div class="t-tags"><span class="t-tag">Operations</span><span class="t-tag">Event Management</span></div>
+          <div class="t-detail">Oversaw vendor management, budget allocation, and contingency planning across the entire academic year calendar.</div>
+          <button class="expand-btn" onclick="toggleExpand(this)">Details +</button>
+        </div>
+
+        <div class="year-marker page-enter"><span class="y-label">2022</span></div>
+
+        <div class="timeline-item page-enter">
+          <div class="t-header">
+            <div class="t-title">Student — Makers Asylum</div>
+            <span class="t-date-badge">Sep 2022 – 2023</span>
+          </div>
+          <div class="t-sub">Hardware · 60+ hrs · Residency Projects</div>
+          <div class="t-desc">Completed hands-on labs in PCB design, soldering, KiCad, CAD, IoT, and UAV. Contributed to 5+ residency projects including the Automated Compost Bin.</div>
+          <div class="t-tags"><span class="t-tag">PCB Design</span><span class="t-tag">KiCAD</span><span class="t-tag">IoT</span><span class="t-tag">CAD</span><span class="t-tag">UAV</span><span class="t-tag">Soldering</span></div>
+          <div class="t-detail">Shipped small-batch PCBs, ran DFM checks, and participated in drone and IoT development labs. Gained practical experience across the full hardware development stack.</div>
+          <button class="expand-btn" onclick="toggleExpand(this)">Details +</button>
+        </div>
+
+      </div>
+
+      <!-- Terminal -->
+      <div class="terminal reveal" style="margin-top:80px;">
+        <div class="terminal-bar">
+          <div class="t-dot t-dot-r" style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div>
+          <div class="t-dot t-dot-y" style="width:12px;height:12px;border-radius:50%;background:#febc2e;margin-left:6px"></div>
+          <div class="t-dot t-dot-g" style="width:12px;height:12px;border-radius:50%;background:#28c840;margin-left:6px"></div>
+          <span class="terminal-title">hardik@portfolio ~ experience</span>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <div class="terminal-line">
+            <span class="t-prompt">❯</span>
+            <span class="t-output">Type <span class="highlight">--help</span> to see available commands</span>
+          </div>
+          <div class="terminal-input-row">
+            <span class="t-prompt">❯</span>
+            <input id="terminal-input" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="enter command..."/>
+            <span class="t-cursor"></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
 </main>
 
-<footer><div class="container">© Hardik Sethia</div></footer>
-<script src="assets/script.js"></script>
+<footer><div class="container">© 2025 Hardik Sethia</div></footer>
+
+<script src="assets/cursor.js"></script>
+<script src="assets/site.js"></script>
+<script>
+/* ── Page enter: scanline sweep + staggered slide-in ── */
+(function(){
+  const scanline = document.getElementById('scanline');
+  scanline.classList.add('scanning');
+
+  const enterEls = document.querySelectorAll('.page-enter');
+  enterEls.forEach((el, i) => {
+    setTimeout(() => el.classList.add('entered'), 120 + i * 90);
+  });
+})();
+
+/* ── Timeline expand ── */
+function toggleExpand(btn) {
+  const item = btn.closest('.timeline-item');
+  item.classList.toggle('expanded');
+  btn.textContent = item.classList.contains('expanded') ? 'Details −' : 'Details +';
+}
+
+/* ── Terminal ── */
+const COMMANDS = {
+  '--help': () => `<div class="t-output"><span class="highlight">Available commands:</span><br>&nbsp; <span class="highlight">--help</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Show this help<br>&nbsp; <span class="highlight">ls roles</span> &nbsp;&nbsp;&nbsp;List all roles<br>&nbsp; <span class="highlight">ls skills</span> &nbsp;&nbsp;List skills<br>&nbsp; <span class="highlight">cat resume</span> &nbsp;Quick summary<br>&nbsp; <span class="highlight">run contact</span>&nbsp;Contact details<br>&nbsp; <span class="highlight">ls projects</span>&nbsp;List projects<br>&nbsp; <span class="highlight">whoami</span> &nbsp;&nbsp;&nbsp;&nbsp;About Hardik<br>&nbsp; <span class="highlight">clear</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clear terminal</div>`,
+  'ls roles':   () => `<div class="t-output"><span class="highlight">2026</span> CAV Subteam · HEVT @ Virginia Tech<br><span class="highlight">2025</span> R&D Lead · inspireFly @ Virginia Tech<br><span class="highlight">2024</span> Intern · TheStudentScoop (AI & Robotics)<br><span class="highlight">2023</span> Fellow · Encode Justice India<br><span class="highlight">2023</span> Head of Electrical · FRC Rookie Team<br><span class="highlight">2022</span> Student · Makers Asylum Residency</div>`,
+  'ls skills':  () => `<div class="t-output">Programming: <span class="highlight">Python  Java  SwiftUI  C++</span><br>Hardware: <span class="highlight">PCB  KiCad  IoT  CAD  Robotics  UAV</span></div>`,
+  'cat resume': () => `<div class="t-output"><span class="highlight">Hardik Sethia</span> — Computer Engineering, Virginia Tech<br>HEVT CAV Subteam · inspireFly R&D Lead<br>Ex-intern @ TheStudentScoop · Fellow @ Encode Justice</div>`,
+  'run contact':() => `<div class="t-output"><span class="highlight">Email:</span> hsethia2007@gmail.com<br><span class="highlight">LinkedIn:</span> linkedin.com/in/2077hardiksethia</div>`,
+  'ls projects':() => `<div class="t-output"><span class="highlight">1.</span> TeraToffs NFT<br><span class="highlight">2.</span> Voice Assistant "Sophie"<br><span class="highlight">3.</span> Automated Compost Bin<br><span class="highlight">4.</span> Smart Lamp Design<br><span class="highlight">5.</span> Beat the Heat</div>`,
+  'whoami':     () => `<div class="t-output"><span class="highlight">hardik</span> — builder · roboticist · computer engineering @ VT</div>`,
+  'clear':      () => '__clear__',
+};
+
+const termBody  = document.getElementById('terminal-body');
+const termInput = document.getElementById('terminal-input');
+
+termInput.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const cmd = termInput.value.trim().toLowerCase();
+  termInput.value = '';
+  if (!cmd) return;
+  const inputRow = termBody.querySelector('.terminal-input-row');
+  const echo = document.createElement('div');
+  echo.className = 't-line-block';
+  echo.innerHTML = `<div class="terminal-line"><span class="t-prompt">❯</span><span style="color:#e0e0f0">${cmd}</span></div>`;
+  termBody.insertBefore(echo, inputRow);
+  const handler = COMMANDS[cmd];
+  const result = handler ? handler() : `<div class="t-output" style="color:#ff7eb3">command not found: ${cmd} — try <span class="highlight">--help</span></div>`;
+  if (result === '__clear__') {
+    termBody.querySelectorAll('.t-line-block').forEach(r => r.remove());
+  } else {
+    const out = document.createElement('div');
+    out.className = 't-line-block';
+    out.innerHTML = `<div class="terminal-line"><span class="t-prompt" style="opacity:0">❯</span>${result}</div>`;
+    termBody.insertBefore(out, inputRow);
+  }
+  termBody.scrollTop = termBody.scrollHeight;
+});
+termBody.addEventListener('click', () => termInput.focus());
+</script>
 </body>
 </html>
-
-

@@ -4,217 +4,298 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Hardik Sethia – Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css"/>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <!-- Apply theme before first paint to avoid flash -->
+  <script>(function(){if(localStorage.getItem('hs-theme')==='light')document.body.classList.add('light');})()</script>
+  <style>
+    #bg-canvas { position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.35;transition:opacity 0.4s; }
+    body.light #bg-canvas { opacity:0.18; }
+
+    /* Hero */
+    .hero { min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;position:relative; }
+    .hero-grid { display:grid;grid-template-columns:1fr 300px;gap:64px;align-items:center;width:100%; }
+    .hero-content h1 { font-family:var(--font-display);font-size:clamp(52px,7.5vw,92px);font-weight:800;line-height:0.95;letter-spacing:-3px;color:var(--text);margin-bottom:24px; }
+    .hero-content h1 em { font-family:var(--font-serif);font-style:italic;color:var(--accent);font-weight:400; }
+    .hero-sub { font-size:12px;color:var(--muted);margin-bottom:10px;letter-spacing:0.08em;text-transform:uppercase; }
+    .hero-desc { font-size:14px;color:rgba(232,232,240,0.75);max-width:440px;margin-bottom:36px;line-height:1.85; }
+    body.light .hero-desc { color:#3a3a4a; }
+    .btn-row { display:flex;gap:12px;flex-wrap:wrap; }
+
+    /* Photo */
+    .hero-photo-wrap { position:relative;align-self:stretch;display:flex;align-items:center; }
+    .hero-photo-orbit {
+      position:absolute;inset:-24px;border-radius:50%;
+      border:1px dashed rgba(127,255,110,0.13);
+      animation:orbit 20s linear infinite;pointer-events:none;
+    }
+    body.light .hero-photo-orbit { border-color:rgba(26,143,0,0.1); }
+    @keyframes orbit { to { transform:rotate(360deg); } }
+    .hero-photo-frame {
+      position:relative;width:100%;max-height:420px;
+      border-radius:20px;overflow:hidden;border:1px solid var(--border);
+      box-shadow:0 0 60px -10px rgba(127,255,110,0.18),0 24px 64px rgba(0,0,0,0.5);
+      transition:box-shadow 0.4s;
+    }
+    body.light .hero-photo-frame { box-shadow:0 0 40px -10px rgba(26,143,0,0.12),0 16px 48px rgba(0,0,0,0.1); }
+    .hero-photo-frame img { width:100%;height:100%;object-fit:cover;object-position:center top;display:block;aspect-ratio:3/4; }
+    .hero-photo-frame::after {
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to top, var(--bg) 0%, rgba(10,10,15,0.15) 30%, transparent 55%);
+      transition:background 0.4s;pointer-events:none;
+    }
+    .hero-photo-tag {
+      position:absolute;bottom:-14px;left:-14px;z-index:3;
+      background:var(--surface2);border:1px solid var(--border);
+      border-radius:12px;padding:10px 16px;font-size:12px;color:var(--text);
+    }
+    .hero-photo-tag strong { display:block;color:var(--accent);font-family:var(--font-display);font-size:17px;font-weight:800; }
+
+    .scroll-hint { position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:10px;letter-spacing:0.12em;text-transform:uppercase; }
+    .scroll-line { width:1px;height:44px;background:linear-gradient(to bottom,var(--accent),transparent);animation:scrollPulse 2s ease-in-out infinite; }
+    @keyframes scrollPulse { 0%,100%{opacity:0.3;transform:scaleY(0.8)} 50%{opacity:1;transform:scaleY(1)} }
+
+    /* Hero entrance */
+    .hero-content > * { opacity:0;transform:translateY(22px);animation:heroIn 0.75s var(--ease-spring) forwards; }
+    .hero-content > *:nth-child(1){animation-delay:0.08s}
+    .hero-content > *:nth-child(2){animation-delay:0.16s}
+    .hero-content > *:nth-child(3){animation-delay:0.26s}
+    .hero-content > *:nth-child(4){animation-delay:0.36s}
+    .hero-photo-wrap { opacity:0;animation:heroIn 1s 0.2s var(--ease-spring) forwards; }
+    @keyframes heroIn { to { opacity:1;transform:none; } }
+
+    /* Terminal */
+    .terminal { background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:48px;max-width:580px; }
+    .terminal-bar { display:flex;align-items:center;gap:8px;padding:12px 16px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border); }
+    .t-dot{width:10px;height:10px;border-radius:50%} .t-dot.r{background:#ff5f57} .t-dot.y{background:#ffbd2e} .t-dot.g{background:#27c840}
+    .terminal-title { font-size:11px;color:var(--muted);margin-left:8px;letter-spacing:0.05em; }
+    .terminal-body { padding:20px 24px;min-height:120px; }
+    .terminal-line { display:flex;gap:10px;margin-bottom:6px;font-size:13px; }
+    .t-prompt { color:var(--accent);user-select:none; }
+    .t-output { color:var(--muted);padding-left:20px;font-size:12px;line-height:1.8; }
+    .t-output .highlight { color:var(--accent2); }
+    .terminal-input-row { display:flex;gap:10px;align-items:center;margin-top:8px; }
+    #terminal-input { flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:13px;caret-color:var(--accent); }
+    .t-cursor { display:inline-block;width:8px;height:14px;background:var(--accent);vertical-align:middle;animation:blink 1s step-end infinite; }
+    @keyframes blink { 50%{opacity:0} }
+
+    /* Skills */
+    .skill-group{margin-bottom:32px} .skill-group-label{font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px}
+    .tags{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:7px 16px;font-size:12px;color:var(--text);transition:all 0.25s;cursor:none;position:relative;overflow:hidden}
+    .tag::before{content:'';position:absolute;inset:0;background:var(--accent);transform:scale(0);border-radius:inherit;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);z-index:0}
+    .tag span{position:relative;z-index:1}
+    .tag:hover{color:#0a0a0f;border-color:var(--accent)} .tag:hover::before{transform:scale(1)}
+
+    /* Contact */
+    .contact-box{border:1px solid var(--border);border-radius:24px;padding:64px;text-align:center;background:var(--surface);position:relative;overflow:hidden}
+    .contact-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+    .contact-box h2{margin-bottom:12px} .contact-desc{color:var(--muted);font-size:14px;margin-bottom:32px}
+
+    /* Space Intro */
+    #intro-overlay{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;pointer-events:all;transition:opacity 0.9s cubic-bezier(0.4,0,0.2,1)}
+    #intro-overlay.fade-out{opacity:0;pointer-events:none}
+    #intro-canvas{position:absolute;inset:0;width:100%;height:100%}
+    .intro-text{position:relative;z-index:2;text-align:center;opacity:0;transform:scale(0.93);transition:opacity 0.75s ease,transform 0.75s ease}
+    .intro-text.show{opacity:1;transform:scale(1)} .intro-text.hide{opacity:0;transform:scale(1.07);transition-duration:0.5s}
+    .intro-coords{font-family:var(--font-body);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;margin-bottom:20px;transition:opacity 0.15s}
+    body:not(.light) .intro-coords{color:rgba(127,255,110,0.6)} body.light .intro-coords{color:rgba(26,143,0,0.7)}
+    .intro-name{font-family:var(--font-display);font-size:clamp(40px,7vw,80px);font-weight:800;letter-spacing:-2px;line-height:1}
+    body:not(.light) .intro-name{color:#fff} body.light .intro-name{color:#111118}
+    .intro-name span{color:var(--accent)}
+    .intro-tagline{font-family:var(--font-body);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;margin-top:14px}
+    body:not(.light) .intro-tagline{color:rgba(255,255,255,0.38)} body.light .intro-tagline{color:rgba(17,17,24,0.45)}
+    .intro-bar{width:0;height:1px;margin:20px auto 0;background:linear-gradient(90deg,transparent,var(--accent),transparent);transition:width 1.35s cubic-bezier(0.4,0,0.2,1)}
+    .intro-bar.grow{width:280px}
+    body.intro-active > header, 
+    body.intro-active > main, 
+    body.intro-active > footer, 
+    body.intro-active > #bg-canvas { opacity: 0; }
+
+    body.intro-done > header, 
+    body.intro-done > main, 
+    body.intro-done > footer { opacity: 1; transition: opacity 0.6s ease; }
+
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr 240px;gap:40px}}
+    @media(max-width:768px){.hero-grid{grid-template-columns:1fr}.hero-photo-wrap{order:-1;max-width:220px;margin:0 auto}.contact-box{padding:40px 24px}}
+  </style>
 </head>
-<body>
+<body class="intro-active">
+
+<div id="intro-overlay">
+  <canvas id="intro-canvas"></canvas>
+  <div class="intro-text" id="intro-text">
+    <div class="intro-coords" id="intro-coords">INITIALISING</div>
+    <div class="intro-name">Hardik<br><span>Sethia</span></div>
+    <div class="intro-tagline">Engineer · Builder · Maker</div>
+    <div class="intro-bar" id="intro-bar"></div>
+  </div>
+</div>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="page-transition"></div>
+<canvas id="bg-canvas"></canvas>
+
 <header>
   <nav class="container">
-    <a class="logo" href="/">Hardik Sethia</a>
+    <a class="logo" href="/">Hardik <span>Sethia</span></a>
     <ul class="nav-links">
       <li><a href="#projects">Projects</a></li>
       <li><a href="#experience">Experience</a></li>
-      <li><a href="#skill-building">Skill&nbsp;building</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <div class="nav-right">
+      <button id="theme-toggle">☀ Light</button>
+    </div>
   </nav>
 </header>
 
 <main>
   <section class="hero">
     <div class="container hero-grid">
-      <div class="hero-photo">
-  <img src="assets/photo.jpg"
-       alt="Portrait of Hardik Sethia"
-       style="width:100%;height:100%;object-fit:cover;border-radius:16px;">
-</div>
-      <div>
-        <h1>Hardik Sethia</h1>
-        <p>Freshman at Virginia Tech • Robotics Enthusiast • Tech Innovator</p>
-        <p>Focused on building systems that blend hardware, software, and design to solve real problems.</p>
+      <div class="hero-content">
+        <p class="hero-sub">Freshman · Virginia Tech · Computer Engineering</p>
+        <h1>Hardik<br><em>Sethia</em></h1>
+        <p class="hero-desc">Building systems that blend hardware, software, and design to solve real problems — from PCB layouts to LLM-powered voice assistants.</p>
         <div class="btn-row">
           <a class="btn btn-accent" href="#projects">View projects</a>
           <a class="btn" href="mailto:hsethia2007@gmail.com">Email</a>
-          <a class="btn" href="https://www.linkedin.com/in/2077hardiksethia/">LinkedIn</a>
+          <a class="btn" href="https://www.linkedin.com/in/2077hardiksethia/" target="_blank">LinkedIn</a>
         </div>
       </div>
+      <div class="hero-photo-wrap">
+        <div class="hero-photo-orbit"></div>
+        <div class="hero-photo-frame">
+          <img src="assets/photo.jpg" alt="Hardik Sethia"/>
+        </div>
+        <div class="hero-photo-tag">
+          <strong>VT '28</strong>
+          Computer Engineering
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container reveal">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="t-dot r"></div><div class="t-dot y"></div><div class="t-dot g"></div>
+          <span class="terminal-title">hardik@portfolio ~ zsh</span>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <div class="terminal-input-row">
+            <span class="t-prompt">❯</span>
+            <input id="terminal-input" type="text" placeholder="try --help" spellcheck="false" autocomplete="off"/>
+            <span class="t-cursor"></span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:0.05em;">Try: <code style="color:var(--accent2)">--help</code> · <code style="color:var(--accent2)">ls skills</code> · <code style="color:var(--accent2)">cat resume</code></p>
     </div>
   </section>
 
   <section class="section" id="projects">
     <div class="container">
-      <span class="eyebrow">Latest</span>
-      <h2>Projects</h2>
+      <span class="eyebrow reveal">Latest work</span>
+      <h2 class="reveal">Projects</h2>
       <div class="grid">
-        <article class="card">
-          <h3>TeraToffs – NFT Collection</h3>
-          <div class="meta">ERC‑1155 on OpenSea • 500 items</div>
-          <p>Collaborative NFT project demonstrating blockchain dev workflow and creative pipeline.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Implemented ERC‑1155 minting, collection metadata, and release workflow; coordinated art-gen pipeline and listing strategy.</p>
-              <p><a class="kicker" href="https://opensea.io/collection/teratoffs">View on OpenSea →</a></p>
-            </div>
-          </details>
-        </article>
-
-        <article class="card">
-          <h3>Smart Lamp Design</h3>
-          <div class="meta">Swappable filters • Two‑way adjust • Phone stand</div>
-          <p>Compact lamp prototype with modular optics and stability testing.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Iterated on hinge torque, base weight, and thermal profile; validated usability and durability via bench tests.</p>
-            </div>
-          </details>
-        </article>
-
-        <article class="card">
-          <h3>Automated Compost Bin</h3>
-          <div class="meta">IoT sensors • Makers Asylum Residency</div>
-          <p>Embedded sensing and control for efficient household composting.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Integrated temperature/humidity sensors, agitation logic, and notification hooks for maintenance events.</p>
-            </div>
-          </details>
-        </article>
+        <article class="card reveal"><h3>TeraToffs – NFT Collection</h3><div class="meta">ERC‑1155 · 500 items · OpenSea</div><p>Blockchain dev workflow from smart contract config to metadata pipeline and release strategy.</p><details><summary>Learn more</summary><div><p>Implemented ERC‑1155 minting, collection metadata, and release workflow; coordinated art-gen pipeline and listing strategy.</p><p><a href="https://opensea.io/collection/teratoffs" style="color:var(--accent2)">View on OpenSea →</a></p></div></details></article>
+        <article class="card reveal"><h3>Smart Lamp Design</h3><div class="meta">Product · Modular Optics · Ergonomics</div><p>Compact lamp prototype with swappable filters, two-way adjustment, and stability testing.</p><details><summary>Learn more</summary><div><p>Iterated on hinge torque, base weight, and thermal profile; validated usability via bench tests.</p></div></details></article>
+        <article class="card reveal"><h3>Automated Compost Bin</h3><div class="meta">IoT · Makers Asylum Residency</div><p>Sensor fusion for temperature/humidity control, agitation logic, and maintenance alerts.</p><details><summary>Learn more</summary><div><p>Integrated embedded sensors with notification hooks; owned control loop design and maintenance UX.</p></div></details></article>
+        <article class="card reveal"><h3>Beat the Heat</h3><div class="meta">Environmental · Community</div><p>Self-irrigation installs, green zones, and ₹50,000 fundraising for urban heat mitigation.</p><details><summary>Learn more</summary><div><p>Community engagement, site selection, and monitoring plan across multiple zones.</p></div></details></article>
+        <article class="card reveal"><h3>Industrial Process Docs</h3><div class="meta">Manufacturing · Analysis</div><p>8 factory reports focused on technology assessment and process optimization.</p><details><summary>Learn more</summary><div><p>Process mapping, bottleneck analysis, and structured improvement recommendations.</p></div></details></article>
       </div>
-      <div class="center-actions">
-        <a class="btn" href="projects.html">View all projects</a>
-      </div>
+      <div class="center-actions reveal"><a class="btn" href="projects.html">View all projects →</a></div>
     </div>
   </section>
 
-  <section class="section" id="experience">
+  <section class="section section-alt" id="experience">
     <div class="container">
-      <span class="eyebrow">Recent</span>
-      <h2>Experience</h2>
+      <span class="eyebrow reveal">Recent</span>
+      <h2 class="reveal">Experience</h2>
       <div class="grid">
-        <article class="card">
-          <h3>Intern – TheStudentScoop</h3>
-          <div class="meta">June – Sept 2024</div>
-          <p>Built “Sophie,” a voice assistant with LLM backend, VAD, and facial recognition; contributed to RoboDog and humanoid prototypes.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Owned active voice detection pipeline, integrated model inference endpoints, and implemented enrollment/verification flow for face ID.</p>
-            </div>
-          </details>
-        </article>
-
-        <article class="card">
-          <h3>Fellow – Encode Justice (India)</h3>
-          <div class="meta">Aug – Dec 2023</div>
-          <p>Advanced AI-in-education awareness with school partnerships and policy case reviews.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Formed 3 partnerships, researched 10+ proposals, and evaluated 30+ case studies for ethical AI integration.</p>
-            </div>
-          </details>
-        </article>
-
-        <article class="card">
-          <h3>Member – Sports Council</h3>
-          <div class="meta">Aug 2023 – May 2024</div>
-          <p>Organized 15+ sports events, handling ops, scheduling, and stakeholder coordination.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Oversaw vendor management, budget guards, and contingency planning across the calendar.</p>
-            </div>
-          </details>
-        </article>
+        <article class="card reveal"><h3>CAV Subteam – HEVT</h3><div class="meta">Jan 2026 – Present</div><p>Coordinate frame transforms for GPS data; Adaptive Cruise Control in Foxglove simulation.</p><details><summary>Learn more</summary><div><p>GPS localisation, coordinate maths, and ACC prototyping on the Connected Autonomous Vehicles subteam at Virginia Tech.</p></div></details></article>
+        <article class="card reveal"><h3>R&amp;D Lead – inspireFly</h3><div class="meta">Oct 2025 – Present</div><p>Payload board in KiCAD; managing 5+ member team for stratospheric CubeSat deployment.</p><details><summary>Learn more</summary><div><p>Designed the electronics architecture for a 5×5 inch pocket cube intended for stratospheric deployment.</p></div></details></article>
+        <article class="card reveal"><h3>Intern – TheStudentScoop</h3><div class="meta">Jun – Sep 2024</div><p>Built "Sophie," a voice assistant with LLM backend, VAD, and facial recognition.</p><details><summary>Learn more</summary><div><p>Owned active voice detection pipeline, integrated model inference endpoints, and implemented face ID enrollment.</p></div></details></article>
+        <article class="card reveal"><h3>Fellow – Encode Justice</h3><div class="meta">Aug – Dec 2023</div><p>Advanced AI-in-education awareness with school partnerships and policy case reviews.</p><details><summary>Learn more</summary><div><p>Formed 3 partnerships, researched 10+ proposals, evaluated 30+ case studies for ethical AI integration.</p></div></details></article>
+        <article class="card reveal"><h3>Head of Electrical – FRC</h3><div class="meta">Nov 2023 – Mar 2024</div><p>Led electrical for a rookie FRC team; earned Rookie's Award with robust power and safety design.</p><details><summary>Learn more</summary><div><p>Specified protection circuits, harness routing, and labeling; coordinated pit procedures and fault isolation.</p></div></details></article>
+        <article class="card reveal"><h3>Student – Makers Asylum</h3><div class="meta">Sep 2022 – 2023 · 60+ hrs</div><p>PCB design, soldering, KiCad, CAD, IoT, and UAV labs; 5+ residency projects.</p><details><summary>Learn more</summary><div><p>Shipped small-batch PCBs, ran DFM checks, and participated in drone and IoT development labs.</p></div></details></article>
       </div>
-      <div class="center-actions">
-        <a class="btn" href="experience.html">View all experience</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-muted" id="skill-building">
-    <div class="container">
-      <span class="eyebrow">Hands‑on</span>
-      <h2>Skill building</h2>
-      <div class="grid">
-        <article class="card">
-          <h3>Head of Electrical – FRC</h3>
-          <div class="meta">Nov 2023 – Mar 2024</div>
-          <p>Led electrical for a rookie FRC team; earned the Rookie’s Award with robust power and safety design.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Specified protection, harness routing, and labeling; coordinated pit procedures and fault isolation during events.</p>
-            </div>
-          </details>
-        </article>
-
-        <article class="card">
-          <h3>Student – Makers Asylum</h3>
-          <div class="meta">Sep 2022 – 2023 (60+ hrs)</div>
-          <p>Completed PCB design, soldering, KiCad, CAD, IoT, UAV; contributed to 5+ residency projects.</p>
-          <details>
-            <summary>Learn more</summary>
-            <div>
-              <p>Shipped small-batch PCBs, ran DFM checks, and participated in drone and IoT labs.</p>
-            </div>
-          </details>
-        </article>
-      </div>
+      <div class="center-actions reveal"><a class="btn" href="experience.html">View all experience →</a></div>
     </div>
   </section>
 
   <section class="section" id="skills">
     <div class="container">
-      <span class="eyebrow">Toolkit</span>
-      <h2>Skills & Expertise</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Programming</h3>
-          <p>Python, Java, SwiftUI</p>
-        </div>
-        <div class="card">
-          <h3>Technical</h3>
-          <p>Robotics, PCB Design, IoT, 3D Printing, CAD, KiCad, Soldering, Drones</p>
-        </div>
-        <div class="card">
-          <h3>Languages</h3>
-          <p>English, Hindi, Marwari, French</p>
-        </div>
-        <div class="card">
-          <h3>Interests</h3>
-          <p>Photography, Formula 1, Finance, Astronomy, Cricket</p>
-        </div>
-        <div class="card">
-          <h3>Other</h3>
-          <p>Project Management, Leadership, Videography, Podcasting, SWOT</p>
-        </div>
-      </div>
+      <span class="eyebrow reveal">Toolkit</span>
+      <h2 class="reveal">Skills & Expertise</h2>
+      <div class="reveal skill-group"><div class="skill-group-label">Programming</div><div class="tags"><div class="tag"><span>Python</span></div><div class="tag"><span>Java</span></div><div class="tag"><span>SwiftUI</span></div><div class="tag"><span>C++</span></div></div></div>
+      <div class="reveal skill-group"><div class="skill-group-label">Hardware & Engineering</div><div class="tags"><div class="tag"><span>Robotics</span></div><div class="tag"><span>PCB Design</span></div><div class="tag"><span>KiCad</span></div><div class="tag"><span>IoT</span></div><div class="tag"><span>3D Printing</span></div><div class="tag"><span>CAD</span></div><div class="tag"><span>Soldering</span></div><div class="tag"><span>Drones / UAV</span></div></div></div>
+      <div class="reveal skill-group"><div class="skill-group-label">Other</div><div class="tags"><div class="tag"><span>Project Management</span></div><div class="tag"><span>Leadership</span></div><div class="tag"><span>Videography</span></div><div class="tag"><span>Podcasting</span></div><div class="tag"><span>Photography</span></div><div class="tag"><span>LLM Integration</span></div></div></div>
+      <div class="reveal skill-group"><div class="skill-group-label">Languages</div><div class="tags"><div class="tag"><span>English</span></div><div class="tag"><span>Hindi</span></div><div class="tag"><span>Marwari</span></div><div class="tag"><span>French</span></div></div></div>
     </div>
   </section>
 
   <section class="section" id="contact">
     <div class="container">
-      <span class="eyebrow">Say hello</span>
-      <h2>Get in touch</h2>
-      <div class="center-actions">
-        <a class="btn btn-accent" href="mailto:hsethia2007@gmail.com">Email Me</a>
-        <a class="btn" href="https://www.linkedin.com/in/2077hardiksethia/">LinkedIn</a>
+      <div class="contact-box reveal">
+        <span class="eyebrow">Say hello</span>
+        <h2>Get in touch</h2>
+        <p class="contact-desc">Open to collaborations, internships, and interesting conversations.</p>
+        <div class="btn-row" style="justify-content:center">
+          <a class="btn btn-accent" href="mailto:hsethia2007@gmail.com">Email Me</a>
+          <a class="btn" href="https://www.linkedin.com/in/2077hardiksethia/" target="_blank">LinkedIn</a>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="container">© Hardik Sethia</div>
-</footer>
-<script src="assets/script.js"></script>
+<footer><div class="container">© 2025 Hardik Sethia — Built with precision.</div></footer>
+
+<script src="assets/cursor.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/intro.js"></script>
+<script>
+const COMMANDS = {
+  '--help': () => `<div class="t-output"><span class="highlight">Available commands:</span><br>&nbsp; <span class="highlight">--help</span> &nbsp;&nbsp;&nbsp;&nbsp; Show this message<br>&nbsp; <span class="highlight">ls skills</span> &nbsp; List skills<br>&nbsp; <span class="highlight">cat resume</span> &nbsp;Quick summary<br>&nbsp; <span class="highlight">run contact</span> Contact details<br>&nbsp; <span class="highlight">ls projects</span> List projects<br>&nbsp; <span class="highlight">whoami</span> &nbsp;&nbsp;&nbsp;&nbsp; About Hardik<br>&nbsp; <span class="highlight">clear</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Clear terminal</div>`,
+  'ls skills':  () => `<div class="t-output">Programming: <span class="highlight">Python  Java  SwiftUI  C++</span><br>Hardware: <span class="highlight">PCB  KiCad  IoT  CAD  Robotics  UAV</span><br>Other: <span class="highlight">Videography  Leadership  Podcasting  LLM</span></div>`,
+  'cat resume': () => `<div class="t-output"><span class="highlight">Hardik Sethia</span> — Freshman, Virginia Tech (Computer Engineering)<br>HEVT CAV Subteam · inspireFly R&D Lead<br>Ex-intern @ TheStudentScoop · Fellow @ Encode Justice</div>`,
+  'run contact':() => `<div class="t-output">Opening contact...<br><span class="highlight">Email:</span> hsethia2007@gmail.com<br><span class="highlight">LinkedIn:</span> linkedin.com/in/2077hardiksethia</div>`,
+  'ls projects':() => `<div class="t-output"><span class="highlight">1.</span> TeraToffs NFT Collection<br><span class="highlight">2.</span> Smart Lamp Design<br><span class="highlight">3.</span> Automated Compost Bin<br><span class="highlight">4.</span> Beat the Heat<br><span class="highlight">5.</span> Industrial Process Docs</div>`,
+  'whoami':     () => `<div class="t-output"><span class="highlight">hardik</span> — builder · roboticist · freshman @ VT</div>`,
+  'help':       () => `<div class="t-output">Tip: use <span class="highlight">--help</span> for the full command list</div>`,
+  'clear':      () => '__clear__',
+};
+const termBody = document.getElementById('terminal-body');
+const termInput = document.getElementById('terminal-input');
+termInput.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const cmd = termInput.value.trim().toLowerCase();
+  termInput.value = '';
+  if (!cmd) return;
+  const inputRow = termBody.querySelector('.terminal-input-row');
+  const echo = document.createElement('div');
+  echo.className = 't-line-block';
+  echo.innerHTML = `<div class="terminal-line"><span class="t-prompt">❯</span><span style="color:var(--text)">${cmd}</span></div>`;
+  termBody.insertBefore(echo, inputRow);
+  const result = COMMANDS[cmd] ? COMMANDS[cmd]() : `<div class="t-output" style="color:#ff7eb3">not found: ${cmd} — try <span class="highlight">--help</span></div>`;
+  if (result === '__clear__') { termBody.querySelectorAll('.t-line-block').forEach(r=>r.remove()); }
+  else {
+    const out = document.createElement('div'); out.className = 't-line-block';
+    out.innerHTML = `<div class="terminal-line"><span class="t-prompt" style="opacity:0">❯</span>${result}</div>`;
+    termBody.insertBefore(out, inputRow);
+  }
+  termBody.scrollTop = termBody.scrollHeight;
+});
+termBody.addEventListener('click', () => termInput.focus());
+</script>
 </body>
 </html>
-
-
-
